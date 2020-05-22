@@ -32,7 +32,7 @@ exports.autenticarUsuario = async (req, res) => {
                 rol: usuario.rol
             }
         }
-        jwt.sign(payload, process.env.SECRETA, {
+        jwt.sign(payload, 'palabrasecreta', {
             expiresIn: 3600 // 1 hora
         }, (error, token) => {
             if (error) throw error

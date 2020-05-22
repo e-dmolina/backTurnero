@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
     }
     // Validar token
     try {
-        const cifrado = jwt.verify(token, process.env.SECRETA)
+        const cifrado = jwt.verify(token, 'palabrasecreta')
         req.usuario = cifrado.usuario
         next()
     } catch (error) {

@@ -2,12 +2,15 @@ const Turnosctl = {};
 const TurnoModel = require('../models/Turno');
 const UsuarioModel = require('../models/Usuario')
 const { validationResult } = require('express-validator')
+const moment = require('moment')
 
 // Obtiene todos los turnos de todos los usuarios
 Turnosctl.getAllTurnos = async (req, res) => {
     try {
-            const turnos = await TurnoModel.find()
-            return res.json(turnos)
+        const turnos = await TurnoModel.find()
+        console.log(new Date().getDate(), 'sdfs')
+
+        return res.json(turnos)
     } catch (error) {
         console.log(error)
         res.status(500).json({ msg: 'Hubo un error' })
@@ -19,18 +22,14 @@ Turnosctl.getTurnos = async (req, res) => {
     try {
         if (req.usuario.rol === 'Admin') {
             const turnos = await TurnoModel.find()
+            let filtrados = await turnos.filter(t => t.fecha >= moment(new Date()).format('DD-MM-YYYY'))
 
-            // var nuevo = []
-            // turnos.map(async t => {
-            //     let usuario = await UsuarioModel.findById(t.cliente)                
-            //     t.nombreCliente = usuario.nombre
-            //     nuevo.push(t)
-            // })
-            // console.log(nuevo)
-            return res.json(turnos)
+            return res.json(filtrados)
         }
         const turnos = await TurnoModel.find({ cliente: req.usuario.id })
-        res.json(turnos)
+        let filtrados = await turnos.filter(t => t.fecha >= moment(new Date()).format('DD-MM-YYYY'))
+
+        res.json(filtrados)
     } catch (error) {
         console.log(error)
         res.status(500).json({ msg: 'Hubo un error' })
@@ -117,8 +116,8 @@ Turnosctl.deleteTurno = async (req, res) => {
         }
 
         // Eliminar turno
-        await TurnoModel.findOneAndRemove({_id: req.params.id})
-        res.json({msg: 'Turno eliminado'})
+        await TurnoModel.findOneAndRemove({ _id: req.params.id })
+        res.json({ msg: 'Turno eliminado' })
 
     } catch (error) {
         console.log(error)
