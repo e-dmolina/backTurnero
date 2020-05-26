@@ -44,6 +44,18 @@ Turnosctl.getTurnos = async (req, res) => {
             }
         }
         )
+        // TODO: probar ordenar por fecha y hora
+        function ordenarAsc(p_array_json, p_key) {
+            p_array_json.sort(function (a, b) {
+                return a[p_key] > b[p_key];
+            });
+        }
+
+        function ordenarDesc(p_array_json, p_key) {
+            ordenarAsc(p_array_json, p_key); p_array_json.reverse(); 
+         }
+
+        await ordenarDesc(filtrados, 'fecha'); 
 
         res.json(filtrados)
     } catch (error) {
