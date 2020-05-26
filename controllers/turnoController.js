@@ -20,29 +20,30 @@ Turnosctl.getAllTurnos = async (req, res) => {
 // obtiene los turnos del usuario logueado
 Turnosctl.getTurnos = async (req, res) => {
     try {
+        let turnos = {}
         if (req.usuario.rol === 'Admin') {
-            const turnos = await TurnoModel.find()
+            turnos = await TurnoModel.find()
 
-            // Filtro las fechas por mes y dia mayor a hoy
-            let filtrados = await turnos.filter(t => {
-                // mes
-                if (t.fecha.substring(3, 5) > moment(new Date()).format('DD-MM-YYYY').substring(3, 5)) {
-                    return t
-                }
-
-                // dia
-                if (t.fecha.substring(0, 2) < moment(new Date()).format('DD-MM-YYYY').substring(0, 2)) {
-                    return
-                } else {
-                    return t
-                }
-            }
-            )
-
-            return res.json(filtrados)
+        } else {
+            turnos = await TurnoModel.find({ cliente: req.usuario.id })
         }
-        const turnos = await TurnoModel.find({ cliente: req.usuario.id })
-        let filtrados = await turnos.filter(t => t.fecha >= moment(new Date()).format('DD-MM-YYYY'))
+        // let filtrados = await turnos.filter(t => t.fecha >= moment(new Date()).format('DD-MM-YYYY'))
+
+        // Filtro las fechas por mes y dia mayor a hoy
+        let filtrados = await turnos.filter(t => {
+            // mes
+            if (t.fecha.substring(3, 5) > moment(new Date()).format('DD-MM-YYYY').substring(3, 5)) {
+                return t
+            }
+
+            // dia
+            if (t.fecha.substring(0, 2) < moment(new Date()).format('DD-MM-YYYY').substring(0, 2)) {
+                return
+            } else {
+                return t
+            }
+        }
+        )
 
         res.json(filtrados)
     } catch (error) {
