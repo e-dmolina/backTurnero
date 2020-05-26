@@ -22,7 +22,22 @@ Turnosctl.getTurnos = async (req, res) => {
     try {
         if (req.usuario.rol === 'Admin') {
             const turnos = await TurnoModel.find()
-            let filtrados = await turnos.filter(t => t.fecha >= moment(new Date()).format('DD-MM-YYYY'))
+
+            // Filtro las fechas por mes y dia mayor a hoy
+            let filtrados = await turnos.filter(t => {
+                // mes
+                if (t.fecha.substring(3, 5) > moment(new Date()).format('DD-MM-YYYY').substring(3, 5)) {
+                    return t
+                }
+
+                // dia
+                if (t.fecha.substring(0, 2) < moment(new Date()).format('DD-MM-YYYY').substring(0, 2)) {
+                    return
+                } else {
+                    return t
+                }
+            }
+            )
 
             return res.json(filtrados)
         }
