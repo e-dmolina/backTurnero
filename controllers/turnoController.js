@@ -22,7 +22,7 @@ Turnosctl.getTurnos = async (req, res) => {
     try {
         let turnos = {}
         if (req.usuario.rol === 'Admin') {
-            turnos = await TurnoModel.find()
+            turnos = await TurnoModel.find().sort('hora')
 
         } else {
             turnos = await TurnoModel.find({ cliente: req.usuario.id })
@@ -45,17 +45,36 @@ Turnosctl.getTurnos = async (req, res) => {
         }
         )
         // TODO: probar ordenar por fecha y hora
-        function ordenarAsc(p_array_json, p_key) {
-            p_array_json.sort(function (a, b) {
-                return a[p_key] > b[p_key];
-            });
-        }
+        // function ordenarAsc(p_array_json, p_key) {
+        //     p_array_json.sort(function (a, b) {
+        //         return a[p_key].substring(3, 5) > b[p_key].substring(3, 5);
+        //     });
+        // }
 
-        function ordenarDesc(p_array_json, p_key) {
-            ordenarAsc(p_array_json, p_key); p_array_json.reverse(); 
-         }
+        // function ordenarDesc(p_array_json, p_key) {
+        //     ordenarAsc(p_array_json, p_key); p_array_json.reverse(); 
+        //  }
 
-        await ordenarDesc(filtrados, 'fecha'); 
+        // await ordenarAsc(filtrados, 'fecha'); 
+        // console.log(filtrados)
+        // Ordena por dia
+        filtrados.sort((a, b) => {
+            return (a.fecha.substring(0, 2) > b.fecha.substring(0, 2))
+                ?
+                1
+                :
+                ((b.fecha.substring(0, 2) > a.fecha.substring(0, 2)) ? -1 : 0)
+        })
+
+        // Ordena por mes
+        filtrados.sort((a, b) => {
+            return (a.fecha.substring(3, 5) > b.fecha.substring(3, 5))
+                ?
+                1
+                :
+                ((b.fecha.substring(3, 5) > a.fecha.substring(3, 5)) ? -1 : 0)
+        })
+
 
         res.json(filtrados)
     } catch (error) {
