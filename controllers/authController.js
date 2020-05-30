@@ -22,7 +22,7 @@ exports.autenticarUsuario = async (req, res) => {
         // Revisar que el password sea correcto
         const passCorrecto = await bcrypt.compare(password, usuario.password)
         if (!passCorrecto) {
-            return res.status(400).json({ msg: 'Password incorrecto' })
+            return res.status(400).json({ msg: 'Contraseña incorrecta' })
         }
 
         // Crear y firmar jwt
