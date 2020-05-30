@@ -12,7 +12,6 @@ router.get('/',
 )
 
 router.post('/',
-    auth,
     [
         check('nombre').not().isEmpty().withMessage('El nombre es obligatorio'),
         check('telefono').not().isEmpty().withMessage('El telefono es obligatorio'),
